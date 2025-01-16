@@ -21,7 +21,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#define WEIGHTED 1
+// #define WEIGHTED 1
 #include "ligra.h"
 
 struct BF_F {
@@ -29,7 +29,8 @@ struct BF_F {
   int* Visited;
   BF_F(intE* _ShortestPathLen, int* _Visited) : 
     ShortestPathLen(_ShortestPathLen), Visited(_Visited) {}
-  inline bool update (uintE s, uintE d, intE edgeLen) { //Update ShortestPathLen if found a shorter path
+  inline bool update (uintE s, uintE d) { //Update ShortestPathLen if found a shorter path
+     intE edgeLen = (s+d)%16 + 1;
     intE newDist = ShortestPathLen[s] + edgeLen;
     if(ShortestPathLen[d] > newDist) {
       ShortestPathLen[d] = newDist;
@@ -37,7 +38,8 @@ struct BF_F {
     }
     return 0;
   }
-  inline bool updateAtomic (uintE s, uintE d, intE edgeLen){ //atomic Update
+  inline bool updateAtomic (uintE s, uintE d){ //atomic Update
+    intE edgeLen = (s+d)%16 + 1;
     intE newDist = ShortestPathLen[s] + edgeLen;
     return (writeMin(&ShortestPathLen[d],newDist) &&
 	    CAS(&Visited[d],0,1));
@@ -57,11 +59,12 @@ struct BF_Vertex_F {
 
 template <class vertex>
 void Compute(graph<vertex>& GA, commandLine P) {
-  long start = P.getOptionLongValue("-r",0);
+  long start = P.getOptionLongValue("-r",1000);
   long n = GA.n;
+  startTime();
   //initialize ShortestPathLen to "infinity"
   intE* ShortestPathLen = newA(intE,n);
-  {parallel_for(long i=0;i<n;i++) ShortestPathLen[i] = INT_MAX/2;}
+  {parallel_for(long i=0;i<n;i++) ShortestPathLen[i] = 65536;}
   ShortestPathLen[start] = 0;
 
   int* Visited = newA(int,n);
@@ -73,7 +76,7 @@ void Compute(graph<vertex>& GA, commandLine P) {
   while(!Frontier.isEmpty()){
     if(round == n) {
       //negative weight cycle
-      {parallel_for(long i=0;i<n;i++) ShortestPathLen[i] = -(INT_E_MAX/2);}
+      {parallel_for(long i=0;i<n;i++) ShortestPathLen[i] = 65536;}
       break;
     }
     vertexSubset output = edgeMap(GA, Frontier, BF_F(ShortestPathLen,Visited), GA.m/20, dense_forward);
@@ -82,6 +85,15 @@ void Compute(graph<vertex>& GA, commandLine P) {
     Frontier = output;
     round++;
   }
+  nextTime("SSSP runtime");
   Frontier.del(); free(Visited);
+  char* iFile = P.getArgument(0);
+  std::string outFile = std::string(iFile) + ".sssp";  
+  ofstream of(outFile);
+  for (auto i = 0; i < n; i++)
+  {
+      of << i << " " << ShortestPathLen[i] << endl; 
+  }
+  of.close();      
   free(ShortestPathLen);
 }

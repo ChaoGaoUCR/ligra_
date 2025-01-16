@@ -115,6 +115,21 @@ graph(vertex* _V, long _n, long _m, Deletable* _D, uintE* _flags) : V(_V),
     D->del();
     free(D);
   }
+  
+  bool edgecheck(intE src, intE dst){
+    intE degree = V[src].getOutDegree();
+    if (degree == 0)
+    {
+      return false;
+    }
+    for(intE start = 0; start < degree; start++){
+      if (V[src].getOutNeighbor(start) == dst)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 
   void transpose() {
     if ((sizeof(vertex) == sizeof(asymmetricVertex)) ||

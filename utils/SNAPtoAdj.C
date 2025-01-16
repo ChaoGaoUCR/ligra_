@@ -33,8 +33,13 @@
 
 int parallel_main(int argc, char* argv[]) {
   commandLine P(argc,argv,"[-s] <input SNAP file> <output Ligra file>");
-  char* iFile = P.getArgument(1);
-  char* oFile = P.getArgument(0);
+  char* iFile = P.getArgument(0);
+  // char* oFile = P.getArgument(0);
+  // char* oFile = "output.txt";
+  std::string oFile_s = std::string(iFile) + ".adj";
+  char* oFile = new char[oFile_s.length() + 1];
+  strcpy(oFile, oFile_s.c_str());
+  printf("Input file = %s |  Output file = %s\n", iFile, oFile);
   bool sym = P.getOption("-s");
   edgeArray<uintT> G = readSNAP<uintT>(iFile);
   writeGraphToFile<uintT>(graphFromEdges(G,sym),oFile);

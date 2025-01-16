@@ -39,7 +39,7 @@ struct BFS_F {
 
 template <class vertex>
 void Compute(graph<vertex>& GA, commandLine P) {
-  long start = P.getOptionLongValue("-r",0);
+  long start = P.getOptionLongValue("-r",10);
   long n = GA.n;
   //creates Parents array, initialized to all -1, except for start
   uintE* Parents = newA(uintE,n);
@@ -52,5 +52,14 @@ void Compute(graph<vertex>& GA, commandLine P) {
     Frontier = output; //set new frontier
   } 
   Frontier.del();
+  char* iFile = P.getArgument(0);
+  std::string outFile = std::string(iFile) + ".bfs";  
+  ofstream of(outFile);
+  std::cout << UINT_MAX << std::endl;
+  for (auto i = 0; i < n; i++)
+  {
+      of << i << " " << Parents[i] << endl; 
+  }
+  of.close();  
   free(Parents); 
 }
