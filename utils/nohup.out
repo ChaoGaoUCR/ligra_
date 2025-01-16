@@ -1,0 +1,29 @@
+Core Graph Edge Number is 16019671
+snapshot 0, num of edges 1394946924
+snapshot 1, num of edges 1394946924
+intersection graph has num of edges 1321528665
+Union graph has num of edges 1468365183
+without pruning num of nnz is 1468365183
+with pruning num of edges is 1464415458
+batch size is 73418259 num of batch is 1, num of snapshot is 2
+snapshot 0, num of edges 1248110418
+snapshot 1, num of edges 1248110418
+snapshot 2, num of edges 1248110418
+snapshot 3, num of edges 1248110418
+snapshot 4, num of edges 1248110418
+snapshot 5, num of edges 1248110418
+snapshot 6, num of edges 1248110418
+snapshot 7, num of edges 1248110418
+snapshot 8, num of edges 1248110418
+snapshot 9, num of edges 1248110418
+snapshot 10, num of edges 1248110418
+snapshot 11, num of edges 1248110418
+snapshot 12, num of edges 1248110418
+snapshot 13, num of edges 1248110418
+snapshot 14, num of edges 1248110418
+snapshot 15, num of edges 1248110418
+intersection graph has num of edges 1027855653
+Union graph has num of edges 1468365183
+without pruning num of nnz is 1468365183
+with pruning num of edges is 1464415458
+batch size is 14683651 num of batch is 15, num of snapshot is 16
